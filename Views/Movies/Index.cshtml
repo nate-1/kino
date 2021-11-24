@@ -1,0 +1,14 @@
+﻿@using Microsoft.Extensions.Logging;
+@model IEnumerable<MoviesIndexViewModel>; 
+@inject ILogger<MoviesIndexViewModel> _logger;
+
+@{
+    _logger.LogInformation("Hallo ich bin da");
+}
+
+@foreach(MoviesIndexViewModel movie in Model)
+{ 
+    <h2>@movie.Title</h2>
+    <p>Réalisateur :  @movie.Director</p>
+    <p>Année : @movie.ReleaseYear</p>
+}
