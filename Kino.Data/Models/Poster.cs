@@ -4,20 +4,21 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kino.Data.Model
 {
-    public class Genre
+    public class Poster
     {
-        public Genre()
+        public Poster()
         {
-            this.Movies = new List<Movie>();
         }
-        
+
         [Key]
         public int Id { get; set; }
 
         [Required]
-        [StringLength(50)]
-        public string Label { get; set; }
+        [StringLength(2)]
+        public string Contry { get; set;}
 
-        public List<Movie> Movies { get; set; } 
+        [Required]
+        public Movie Movie { get; set; }
+
     }
 }
