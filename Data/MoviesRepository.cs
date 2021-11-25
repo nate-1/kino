@@ -6,9 +6,12 @@ namespace Kino.Data
 {
     public class MoviesRepository : IMoviesRepository
     {
-        private List<Movie> movies;
+        private static List<Movie> movies;
         public MoviesRepository()
         {
+            if (movies is not null)
+                return;
+
             movies = new List<Movie> {
                 new Movie()
                 {
