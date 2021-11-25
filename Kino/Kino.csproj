@@ -12,4 +12,8 @@
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kino.Data\Kino.Data.csproj" />
+  </ItemGroup>
+
 </Project>

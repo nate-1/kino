@@ -5,7 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using Kino.Models;
-using Kino.Data;
+using Kino.Data.Model;
+using Kino.Data.Repositories;
 
 namespace Kino.Controllers
 {
@@ -41,15 +42,15 @@ namespace Kino.Controllers
             if (!ModelState.IsValid)
                 return View(request);
 
-            Movie movies = new Movie()
-            {
-                Actors = request.Actor.Split(';', StringSplitOptions.TrimEntries).ToList(),
-                Genre = request.Genre.Split(';', StringSplitOptions.TrimEntries).ToList(),
-                Title = request.Title,
-                Director = request.Director,
-                ReleaseDate = request.ReleaseDate
-            };
-            _moviesRepo.Add(movies);
+            // Movie movies = new Movie()
+            // {
+            //     Actors = request.Actor.Split(';', StringSplitOptions.TrimEntries).ToList(),
+            //     Genre = request.Genre.Split(';', StringSplitOptions.TrimEntries).ToList(),
+            //     Title = request.Title,
+            //     Director = request.Director,
+            //     ReleaseDate = request.ReleaseDate
+            // };
+            // _moviesRepo.Add(movies);
 
             string dirPath = Path.Combine(AppContext.BaseDirectory, "file");
 

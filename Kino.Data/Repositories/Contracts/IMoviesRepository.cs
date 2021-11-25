@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kino.Data.Model;
 
-namespace Kino.Data
+namespace Kino.Data.Repositories
 {
     public interface IMoviesRepository
     {
