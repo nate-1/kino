@@ -1,51 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Kino.Data;
 using Kino.Data.Model;
 
 namespace Kino.Data.Repositories
 {
     public class MoviesRepository : IMoviesRepository
     {
-        private static List<Movie> movies;
-        public MoviesRepository()
+        private readonly AppDbContext _dbContect;
+        public MoviesRepository(AppDbContext dbContext)
         {
-            if (movies is not null)
-                return;
+            this._dbContect = dbContext;
         }
 
-        public List<Movie> GetAll()
-            => movies;
-
-        public Movie Get(int id)
-            => movies.Find(m => m.Id == id);
-
-        public void Add(Movie movie)
+        public Task<List<Movie>> GetAllAsync()
         {
-            if (movie.Id > 0)
-                throw new InvalidOperationException("Id must be 0");
-
-            var max = movies.Max(m => m.Id);
-            movie.Id = max + 1;
-            movies.Add(movie);
+            return this._dbContect.Movies.ToListAsync(); 
         }
 
-        public void Delete(int id)
+        public Task<Movie> GetAsync(int id)
         {
-            var movie = movies.Find(m => m.Id == id);
-            if (movie is not null)
-                movies.Remove(movie);
-
+            return this._dbContect.Movies.FirstAsync(f => f.Id == id); 
         }
 
-        public void Update(Movie movie)
+        public Task AddAsync(Movie movie)
         {
-            var i = movies.FindIndex(m => m.Id == movie.Id);
-            if (i != -1)
-            {
-                movies.RemoveAt(i);
-                movies.Insert(i, movie);
-            }
+            return default; 
+        }
+
+        public Task DeleteAsync(int id)
+        {
+            return default;
+        }
+
+        public Task UpdateAsync(Movie movie)
+        {
+            return default;
         }
     }
 }

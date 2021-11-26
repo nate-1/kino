@@ -7,7 +7,7 @@ namespace Kino.Services
 {
     public interface IMoviesService
     {
-        Task<List<MoviesIndexViewModel>> GetAllAsync();
+        Task<IEnumerable<MoviesIndexViewModel>> GetAllAsync();
 
         Task CreateMovieAsync(AddMovieViewModel model);
     }

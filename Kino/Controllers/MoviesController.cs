@@ -18,15 +18,7 @@ namespace Kino.Controllers
         }
         public async Task<IActionResult> Index()
         {
-
-            List<MoviesIndexViewModel> modelList = await this._moviesService.GetAllAsync();
-            // IEnumerable<MoviesIndexViewModel> models = _moviesRepo.GetAll().Select(a =>  new MoviesIndexViewModel() 
-            // {
-            //     Director = a.Director, 
-            //     Index = a.Id, 
-            //     ReleaseYear = a.ReleaseDate.Year, 
-            //     Title = a.Title
-            // });
+            IEnumerable<MoviesIndexViewModel> modelList = await this._moviesService.GetAllAsync();
 
             return View(modelList);
         }
