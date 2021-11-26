@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,9 +19,44 @@ namespace Kino.Services
             this._moviesRepo = moviesRepo;
         }
 
-        public Task CreateMovieAsync(AddMovieViewModel model)
+        public async Task CreateMovieAsync(AddMovieViewModel model)
         {
-            throw new NotImplementedException();
+            IEnumerable<Actor> actors =  model.Actor.Split(';', StringSplitOptions.TrimEntries).Select(
+                a => new Actor()
+                {
+                    Name = a
+                }
+            );
+
+            IEnumerable<Genre> genres = model.Genre.Split(';', StringSplitOptions.TrimEntries).Select(
+                a => new Genre()
+                {
+                    Label = a
+                }
+            );
+
+            Movie movie = new Movie()
+            {
+                Title = model.Title,
+                Director = model.Director,
+                ReleaseDate = model.ReleaseDate, 
+                Actors = actors.ToList(),
+                Genres = genres.ToList() 
+            };
+
+            string dirPath = Path.Combine(AppContext.BaseDirectory, "file");
+
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+
+            string filePath = Path.Combine(dirPath, model.Title.Replace(" ", "_") + "_" + model.ReleaseDate.Year + '.' + model.Poster.ContentType.Split("/")[1]);
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            {
+                await model.Poster.CopyToAsync(fs);
+            }
+            
+            await this._moviesRepo.AddAsync(movie);
         }
 
         public async Task<IEnumerable<MoviesIndexViewModel>> GetAllAsync()

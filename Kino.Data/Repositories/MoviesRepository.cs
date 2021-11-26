@@ -26,10 +26,14 @@ namespace Kino.Data.Repositories
             return this._dbContect.Movies.FirstAsync(f => f.Id == id); 
         }
 
-        public Task AddAsync(Movie movie)
+        public async Task AddAsync(Movie movie)
         {
-            return default; 
-        }
+            if(movie is null)
+                throw new ArgumentNullException(nameof(movie));
+
+            await this._dbContect.Movies.AddAsync(movie); 
+            await this._dbContect.SaveChangesAsync();
+        }   
 
         public Task DeleteAsync(int id)
         {
