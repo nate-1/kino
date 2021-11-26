@@ -15,7 +15,7 @@ namespace Kino.Data.Model
 
         [Required]
         [StringLength(2)]
-        public string Contry { get; set;}
+        public string Country { get; set;}
 
         [Required]
         public Movie Movie { get; set; }

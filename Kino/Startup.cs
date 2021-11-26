@@ -4,7 +4,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Kino.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Kino.Data;
+using Pomelo;
+using Pomelo.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql;
+
 namespace Kino
 {
     public class Startup
@@ -21,7 +28,14 @@ namespace Kino
         {
             services.AddScoped<IMoviesRepository, MoviesRepository>();
             services.AddControllersWithViews();
-            // services.AddLogging();
+            services.AddDbContext<AppDbContext>(dbCtxOption => {
+                dbCtxOption.UseMySql(
+                    Configuration.GetConnectionString("MariaDbConnectionString"),  
+                    new MySqlServerVersion(new Version(10, 3, 31))
+                ).LogTo(Console.WriteLine, LogLevel.Information)
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

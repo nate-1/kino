@@ -10,13 +10,15 @@ namespace Kino.Data.Model
         {
             this.Movies = new List<Movie>();
         }
-        public int Id;
+        
+        [Key]
+        public int Id { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string Name; 
+        public string Name { get; set; }
 
-        public List<Movie> Movies; 
+        public List<Movie> Movies { get; set; }
 
     }
 }
