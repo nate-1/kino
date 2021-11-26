@@ -23,7 +23,7 @@ namespace Kino.Data.Repositories
 
         public Task<Movie> GetAsync(int id)
         {
-            if(id == 0)
+            if(id <= 0)
                 throw new ArgumentNullException(nameof(id));
 
             return this._dbContect.Movies.FirstOrDefaultAsync(f => f.Id == id); 
@@ -38,14 +38,32 @@ namespace Kino.Data.Repositories
             await this._dbContect.SaveChangesAsync();
         }   
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return default;
+            if(id <= 0)
+                return; 
+
+            bool exists = await this._dbContect.Movies.AnyAsync(f => f.Id == id);
+
+            if(!exists)
+                return; 
+
+            Movie movieToDelete = new Movie()
+            {
+                Id = id
+            };
+
+            this._dbContect.Movies.Remove(movieToDelete);
+            await this._dbContect.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(Movie movie)
+        public async Task UpdateAsync(Movie movie)
         {
-            return default;
+            if(movie is null || movie.Id <= 0) 
+                return;
+
+            this._dbContect.Movies.Update(movie);
+            await this._dbContect.SaveChangesAsync();
         }
     }
 }
