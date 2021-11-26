@@ -10,15 +10,19 @@ namespace Kino.Data.Repositories
 {
     public class MoviesRepository : IMoviesRepository
     {
-        private readonly AppDbContext _dbContect;
+        private readonly AppDbContext _dbContext;
         public MoviesRepository(AppDbContext dbContext)
         {
-            this._dbContect = dbContext;
+            this._dbContext = dbContext;
         }
 
         public Task<List<Movie>> GetAllAsync()
         {
-            return this._dbContect.Movies.ToListAsync(); 
+            return this._dbContext.Movies
+            .Include(m => m.Director)
+            .Include(m => m.Genres)
+            .Include(m => m.Actors)
+            .ToListAsync(); 
         }
 
         public Task<Movie> GetAsync(int id)
@@ -26,7 +30,11 @@ namespace Kino.Data.Repositories
             if(id <= 0)
                 throw new ArgumentNullException(nameof(id));
 
-            return this._dbContect.Movies.FirstOrDefaultAsync(f => f.Id == id); 
+            return this._dbContext.Movies
+            .Include(m => m.Director)
+            .Include(m => m.Genres)
+            .Include(m => m.Actors)
+            .FirstOrDefaultAsync(f => f.Id == id); 
         }
 
         public async Task AddAsync(Movie movie)
@@ -34,8 +42,8 @@ namespace Kino.Data.Repositories
             if(movie is null)
                 throw new ArgumentNullException(nameof(movie));
 
-            await this._dbContect.Movies.AddAsync(movie); 
-            await this._dbContect.SaveChangesAsync();
+            await this._dbContext.Movies.AddAsync(movie); 
+            await this._dbContext.SaveChangesAsync();
         }   
 
         public async Task DeleteAsync(int id)
@@ -43,7 +51,7 @@ namespace Kino.Data.Repositories
             if(id <= 0)
                 return; 
 
-            bool exists = await this._dbContect.Movies.AnyAsync(f => f.Id == id);
+            bool exists = await this._dbContext.Movies.AnyAsync(f => f.Id == id);
 
             if(!exists)
                 return; 
@@ -53,8 +61,8 @@ namespace Kino.Data.Repositories
                 Id = id
             };
 
-            this._dbContect.Movies.Remove(movieToDelete);
-            await this._dbContect.SaveChangesAsync();
+            this._dbContext.Movies.Remove(movieToDelete);
+            await this._dbContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Movie movie)
@@ -62,8 +70,8 @@ namespace Kino.Data.Repositories
             if(movie is null || movie.Id <= 0) 
                 return;
 
-            this._dbContect.Movies.Update(movie);
-            await this._dbContect.SaveChangesAsync();
+            this._dbContext.Movies.Update(movie);
+            await this._dbContext.SaveChangesAsync();
         }
     }
 }

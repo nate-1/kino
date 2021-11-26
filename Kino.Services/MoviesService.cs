@@ -7,16 +7,19 @@ using Kino.Data;
 using Kino.Data.Model;
 using Kino.Data.Repositories;
 using Kino.Services.ViewModel;
+using Microsoft.Extensions.Logging;
 
 namespace Kino.Services
 {
     public class MoviesService : IMoviesService
     {
         private readonly IMoviesRepository _moviesRepo;
+        private readonly ILogger<MoviesService> _logger;
 
-        public MoviesService(IMoviesRepository moviesRepo)
+        public MoviesService(IMoviesRepository moviesRepo, ILogger<MoviesService> logger)
         {
             this._moviesRepo = moviesRepo;
+            this._logger = logger;
         }
 
         public async Task CreateMovieAsync(AddMovieViewModel model)
@@ -35,10 +38,15 @@ namespace Kino.Services
                 }
             );
 
+            Director director = new Director() 
+            {
+                Name = model.Director
+            };
+
             Movie movie = new Movie()
             {
                 Title = model.Title,
-                Director = model.Director,
+                Director = director,
                 ReleaseDate = model.ReleaseDate, 
                 Actors = actors.ToList(),
                 Genres = genres.ToList() 
@@ -63,15 +71,19 @@ namespace Kino.Services
         {
             List<Movie> movies = await this._moviesRepo.GetAllAsync();
 
+            this._logger.LogInformation("Director: " + movies[0].Director.Id);
+            this._logger.LogInformation("Genre: " + movies[0].Genres.Count);
+
             if(movies is null || movies.Count == 0)
                 return new List<MoviesIndexViewModel>();
+            
 
             IEnumerable<MoviesIndexViewModel> model = movies.Select((a) => {
                 return new MoviesIndexViewModel()
                 {
                     Index = a.Id, 
                     Title = a.Title, 
-                    Director = a.Director, 
+                    Director = a.Director.Name, 
                     ReleaseYear = a.ReleaseDate.Year
                 };
             });

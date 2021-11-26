@@ -22,7 +22,7 @@ namespace Kino.Data.Model
         
         [Required]
         [StringLength(50)]
-        public string Director { get; set; }
+        public Director Director { get; set; }
         
         [Required]
         public DateTime ReleaseDate { get; set; }
