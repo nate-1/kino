@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Kino.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Kino.Data;
 using Kino.Services;
 using Pomelo;
@@ -27,7 +28,6 @@ namespace Kino
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
             services.AddDbContext<AppDbContext>(dbCtxOption => {
                 dbCtxOption.UseMySql(
                     Configuration.GetConnectionString("MariaDbConnectionString"),  
@@ -37,9 +37,20 @@ namespace Kino
                 .EnableDetailedErrors();
             });
 
+            services.AddAuthentication("Cookie")
+                .AddCookie("Cookie", options => 
+                {
+                    options.LoginPath = "/auth/connect"; 
+                    options.LogoutPath = "/auth/disconnect"; 
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); 
+                    options.SlidingExpiration = true; 
+                    options.Cookie.IsEssential = true;
+                });
 
             services.AddScoped<IMoviesRepository, MoviesRepository>();
             services.AddScoped<IMoviesService, MoviesService>();
+
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +68,7 @@ namespace Kino
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
