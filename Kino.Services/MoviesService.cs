@@ -14,12 +14,10 @@ namespace Kino.Services
     public class MoviesService : IMoviesService
     {
         private readonly IMoviesRepository _moviesRepo;
-        private readonly ILogger<MoviesService> _logger;
 
-        public MoviesService(IMoviesRepository moviesRepo, ILogger<MoviesService> logger)
+        public MoviesService(IMoviesRepository moviesRepo)
         {
             this._moviesRepo = moviesRepo;
-            this._logger = logger;
         }
 
         public async Task CreateMovieAsync(AddMovieViewModel model)
@@ -70,9 +68,6 @@ namespace Kino.Services
         public async Task<IEnumerable<MoviesIndexViewModel>> GetAllAsync()
         {
             List<Movie> movies = await this._moviesRepo.GetAllAsync();
-
-            this._logger.LogInformation("Director: " + movies[0].Director.Id);
-            this._logger.LogInformation("Genre: " + movies[0].Genres.Count);
 
             if(movies is null || movies.Count == 0)
                 return new List<MoviesIndexViewModel>();
