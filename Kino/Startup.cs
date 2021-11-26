@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Kino.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Kino.Data;
+using Kino.Services;
 using Pomelo;
 using Pomelo.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
@@ -26,7 +27,6 @@ namespace Kino
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IMoviesRepository, MoviesRepository>();
             services.AddControllersWithViews();
             services.AddDbContext<AppDbContext>(dbCtxOption => {
                 dbCtxOption.UseMySql(
@@ -36,6 +36,10 @@ namespace Kino
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();
             });
+
+
+            services.AddScoped<IMoviesRepository, MoviesRepository>();
+            services.AddScoped<IMoviesService, MoviesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

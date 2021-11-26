@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kino.Data\Kino.Data.csproj" />
+    <ProjectReference Include="..\Kino.Services\Kino.Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,29 +5,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using Kino.Models;
-using Kino.Data.Model;
-using Kino.Data.Repositories;
-
+using Kino.Services;
+using Kino.Services.ViewModel;
 namespace Kino.Controllers
 {
     public class MoviesController : Controller
     {
-        private readonly IMoviesRepository _moviesRepo;
-        public MoviesController(IMoviesRepository moviesRepo)
+        private readonly IMoviesService _moviesService;
+        public MoviesController(IMoviesService moviesService)
         {
-            _moviesRepo = moviesRepo;
+            _moviesService = moviesService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<MoviesIndexViewModel> models = _moviesRepo.GetAll().Select(a =>  new MoviesIndexViewModel() 
-            {
-                Director = a.Director, 
-                Index = a.Id, 
-                ReleaseYear = a.ReleaseDate.Year, 
-                Title = a.Title
-            });
 
-            return View(models);
+            List<MoviesIndexViewModel> modelList = await this._moviesService.GetAllAsync();
+            // IEnumerable<MoviesIndexViewModel> models = _moviesRepo.GetAll().Select(a =>  new MoviesIndexViewModel() 
+            // {
+            //     Director = a.Director, 
+            //     Index = a.Id, 
+            //     ReleaseYear = a.ReleaseDate.Year, 
+            //     Title = a.Title
+            // });
+
+            return View(modelList);
         }
 
         [HttpGet]
